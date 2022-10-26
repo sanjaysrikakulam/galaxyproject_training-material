@@ -52,7 +52,7 @@ footer: no
 </script>
 
 <section class="tutorial topic-{{ page.topic_name }}">
-    <h1 data-toc-skip>{{ page.title }}</h1>
+    <h1 data-toc-skip itemprop="title">{{ page.title }}</h1>
     {% if page.enable == false or page.enable == "false" %}
     <div class="alert alert-warning" role="alert">
         <h4 class="alert-heading">Under Development!</h4>
@@ -153,7 +153,7 @@ footer: no
         </ul>
         {% endif %}
 
-        <div><strong>{% icon last_modification aria=false %} {{ locale['last-modification'] | default: "Last modification" }}:</strong> {{ page | last_modified_at | date: "%b %-d, %Y"}} </div>
+        <div itemprop="pubdate"><strong>{% icon last_modification aria=false %} {{ locale['last-modification'] | default: "Last modification" }}:</strong> {{ page | last_modified_at | date: "%b %-d, %Y"}} </div>
         <div><strong>{% icon license aria=false %} {{ locale['license'] | default: "License" }}:</strong>
             {% if page.license %}
             Tutorial Content is licensed under {{ page.license }}

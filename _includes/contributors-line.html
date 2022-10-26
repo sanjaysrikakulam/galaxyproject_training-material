@@ -1,10 +1,10 @@
 <div markdown="0">
 {% if include.page.contributors %}
-	<div class="contributors-line">
+	<div class="contributors-line" itemprop="author">
 		{{ locale['authors'] | default: "Authors" }}: {% include _includes/contributor-list.html contributors=include.page.contributors badge=true newcontributors=include.newcontributors %}
 	</div>
 {% elsif include.page.contributions %}
-	<div class="contributors-line">
+	<div class="contributors-line" itemprop="author">
 		{% include _includes/contributor-list2.html contributors=include.page.contributions badge=true newcontributors=include.newcontributors authorsonly=include.authorsonly %}
 	</div>
 {% endif %}
