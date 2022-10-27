@@ -445,6 +445,19 @@ module GtnLinter
         code: "GTN:010",
       )
     }
+
+    self.find_matching_texts(contents, /> (### Agenda)/)
+        .map { |idx, text, selected|
+      ReviewDogEmitter.error(
+        path: @path,
+        idx: idx,
+        match_start: selected.begin(1),
+        match_end: selected.end(1) + 1,
+        replacement: "<agenda-title></agenda-title>",
+        message: "We have developed a new syntax for box titles, please consider using this instead.",
+        code: "GTN:010",
+      )
+    }
   end
 
   def self.no_target_blank(contents)
