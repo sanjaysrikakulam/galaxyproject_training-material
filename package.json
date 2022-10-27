@@ -10,6 +10,6 @@
     "pa11y-ci": "^2.4.2"
   },
   "scripts": {
-"pa11y-ci:sitemap": "pa11y-ci --sitemap http://localhost:4002/training-material/sitemap.xml --sitemap-exclude \"/*.pdf\""
+    "pa11y-ci:sitemap": "pa11y-ci --sitemap http://localhost:4002/training-material/sitemap.xml --sitemap-exclude \"/*.pdf\""
   }
 }
