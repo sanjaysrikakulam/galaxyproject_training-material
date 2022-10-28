@@ -532,13 +532,13 @@ module GtnLinter
 
   def self.fix_ga_wf(contents)
     results = []
-    if ! contents.has_key?("tags")
+    if ! contents.has_key?("tags") || contents["tags"].length == 0
       topic = @path.split('/')[1]
       results.push(ReviewDogEmitter.file_error(
         path: @path, message: "This workflow is missing tags. Please add `\"tags\": [\"#{topic}\"]`", code: "GTN:015"))
     end
 
-    if ! contents.has_key?("annotation")
+    if ! contents.has_key?("annotation") || contents["annotation"].length == 0
       topic = @path.split('/')[1]
       results.push(ReviewDogEmitter.file_error(
         path: @path, message: "This workflow is missing an annotation. Please add `\"annotation\": \"title of tutorial\"`", code: "GTN:016"))
@@ -621,26 +621,27 @@ module GtnLinter
       begin
         contents = handle.read
         data = JSON.parse(contents)
-        contents.split("\n").each.with_index{|text, linenumber|
-          if text.match(/testtoolshed/)
-            emit_results([
-              ReviewDogEmitter.error(
-                path: @path,
-                idx: linenumber,
-                match_start: 0,
-                match_end: text.length,
-                replacement: nil,
-                message: "This step uses a tool from the testtoolshed. These are not permitted in GTN tutorials.",
-                code: "GTN:017",
-              )
-            ])
-          end
-        }
-        results = fix_ga_wf(data)
-        emit_results(results)
       rescue
         emit_results([ReviewDogEmitter.file_error(path: path, message: "Unparseable JSON in this workflow file.", code: "GTN:019")])
       end
+
+      contents.split("\n").each.with_index{|text, linenumber|
+        if text.match(/testtoolshed/)
+          emit_results([
+            ReviewDogEmitter.error(
+              path: @path,
+              idx: linenumber,
+              match_start: 0,
+              match_end: text.length,
+              replacement: nil,
+              message: "This step uses a tool from the testtoolshed. These are not permitted in GTN tutorials.",
+              code: "GTN:017",
+            )
+          ])
+        end
+      }
+      results = fix_ga_wf(data)
+      emit_results(results)
       bib = BibTeX.open(path)
     end
   end
