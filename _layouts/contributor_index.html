@@ -1,5 +1,6 @@
 ---
 layout: base
+header: '<link rel="profile" href="http://microformats.org/profile/hcard">'
 ---
 
 {% assign contributors = site.data['contributors'] %}
@@ -19,18 +20,18 @@ layout: base
 	<div class="stats">
 		<div class="row">
 
-			<div class="col-md-3">
+			<div class="col-md-3 vcard">
 				{% if contributors[page.contributor].github != false %}
-					<img src="https://avatars.githubusercontent.com/{{ page.contributor }}" alt="github avatar" >
+					<img src="https://avatars.githubusercontent.com/{{ page.contributor }}" alt="github avatar" class="photo">
 				{% elsif contributors[page.contributor].avatar %}
-					<img src="{{ contributors[page.contributor].avatar }}" alt="avatar" >
+					<img src="{{ contributors[page.contributor].avatar }}" alt="avatar" class="photo">
 				{% else %}
-					<span class="thumbnail">
-						<img src="https://avatars.githubusercontent.com/{{ page.contributor }}" alt="github avatar" >
+					<span class="thumbnail photo">
+						<img src="https://avatars.githubusercontent.com/{{ page.contributor }}" alt="github avatar">
 					</span>
 				{% endif %}
 
-				<h3>
+				<h3 class="fn">
 					{{ contributors[page.contributor].name | default: page.contributor }}
 				</h3>
                 {% if contributors[page.contributor].bio %}
@@ -48,7 +49,7 @@ layout: base
 				{% endif %}
 
 				{% if contributors[page.contributor].github != false %}
-				<div class="contact-items">
+				<div class="contact-items url">
 					<a title="GitHub" href="https://github.com/{{ page.contributor }}">
 						{% icon github %} {{ page.contributor }}
 					</a>
@@ -56,7 +57,7 @@ layout: base
 				{% endif %}
 
 				{% if contributors[page.contributor].email %}
-				<div class="contact-items">
+				<div class="contact-items email">
 					<a title="E-mail" href="mailto:{{ contributors[page.contributor].email }}">
 						{% icon email %} {{ contributors[page.contributor].email }}
 					</a>
