@@ -233,10 +233,12 @@ module TopicFilter
 
     slide_has_video = false
     slide_translations = []
+    page_ref = nil
     if slides.length > 0 then
       page = slides.sort{|a, b| a[1].path <=> b[1].path}[0][1]
       slide_has_video = page.data.fetch('video', false)
       slide_translations = page.data.fetch('translations', [])
+      page_ref = page
     end
 
     # No matter if there were slides, we override with tutorials if present.
@@ -244,6 +246,7 @@ module TopicFilter
     if tutorials.length > 0 then
       page = tutorials.sort{|a, b| a[1].path <=> b[1].path}[0][1]
       tutorial_translations = page.data.fetch('translations', [])
+      page_ref = page
     end
 
     if page.nil? then
@@ -256,6 +259,7 @@ module TopicFilter
     # Otherwise clone the metadata from it which works well enough.
     page_obj = page.data.dup
     page_obj['id'] = page['topic_name'] + '/' + page['tutorial_name']
+    page_obj['ref'] = page_ref
 
     id = page_obj['id']
     page_obj['video_library'] = Hash.new
@@ -367,6 +371,26 @@ module TopicFilter
     materials = self.collate_materials(pages).map{|k, v| self.resolve_material(site, v) }
     puts "[GTN/TopicFilter] Filling Materials Cache"
     site.data['cache_processed_pages'] = materials
+
+    # Prepare short URLs
+    short_ids = materials.map{|p| p['tutorial_name']}.tally.select{|k, v| v == 1}
+    non_short_ids = materials.map{|p| p['tutorial_name']}.tally.select{|k, v| v != 1}
+    puts "[GTN/TopicFilter] The following tutorials cannot have short IDs due to their non-unique tutorial names."
+    puts "#{non_short_ids}"
+
+    # Update the materials with their short IDs + redirects
+    materials.select{|m| short_ids.include?(m['tutorial_name'])}.each{|m|
+      # Set the short id on the material
+      m['short_id'] = m['tutorial_name']
+
+      if m['ref']
+        # Initialise redirects if it wasn't set
+        if ! m['ref'].data.has_key?("redirect_from") 
+          m['ref'].data['redirect_from'] = []
+        end
+        m['ref'].data['redirect_from'].push("/short/#{m['short_id']}")
+      end
+    }
 
     materials
   end
