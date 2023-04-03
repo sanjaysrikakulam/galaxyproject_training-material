@@ -855,3 +855,4 @@ id:
   1a9: "/topics/visualisation/tutorials/jbrowse/slides.html"
 misc:
   ansible-galaxy: "/topics/admin/tutorials/ansible-galaxy/tutorial.html"
+  stats: "/stats.html"

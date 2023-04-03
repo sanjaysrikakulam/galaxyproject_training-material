@@ -364,7 +364,7 @@ module TopicFilter
 
   def self.process_pages(site, pages)
     # eww.
-    if site.data.has_key?('cache_processed_pages') then 
+    if site.data.has_key?('cache_processed_pages') then
       return site.data['cache_processed_pages']
     end
 
@@ -373,22 +373,38 @@ module TopicFilter
     site.data['cache_processed_pages'] = materials
 
     # Prepare short URLs
-    short_ids = materials.map{|p| p['tutorial_name']}.tally.select{|k, v| v == 1}
-    non_short_ids = materials.map{|p| p['tutorial_name']}.tally.select{|k, v| v != 1}
-    puts "[GTN/TopicFilter] The following tutorials cannot have short IDs due to their non-unique tutorial names."
-    puts "#{non_short_ids}"
+    shortlinks = site.data['shortlinks']
+    shortlinks_reversed = shortlinks['id'].invert
+    mappings = Hash.new{|h, k| h[k] = Array.new}
 
+    shortlinks.keys.each{|kp|
+      shortlinks[kp].each{|k, v|
+        mappings[v].push("/short/#{k}")
+      }
+    }
     # Update the materials with their short IDs + redirects
-    materials.select{|m| short_ids.include?(m['tutorial_name'])}.each{|m|
+    pages.select{|p| mappings.keys.include? p.url }.each{|p|
       # Set the short id on the material
-      m['short_id'] = m['tutorial_name']
-
-      if m['ref']
+      #
+      begin
+        p['short_id'] = shortlinks_reversed[p.url]
+      rescue
+        p.data['short_id'] = shortlinks_reversed[p.url]
+      end
+      if p['ref']
         # Initialise redirects if it wasn't set
-        if ! m['ref'].data.has_key?("redirect_from") 
-          m['ref'].data['redirect_from'] = []
+        if ! p['ref'].data.has_key?("redirect_from")
+          p['ref'].data['redirect_from'] = []
         end
-        m['ref'].data['redirect_from'].push("/short/#{m['short_id']}")
+        p['ref'].data['redirect_from'].push(*mappings[p.url])
+        p['ref'].data['redirect_from'].uniq!
+      else
+        if ! p.data.has_key?("redirect_from")
+          p.data['redirect_from'] = []
+        end
+
+        p.data['redirect_from'].push(*mappings[p.url])
+        p.data['redirect_from'].uniq!
       end
     }
 
