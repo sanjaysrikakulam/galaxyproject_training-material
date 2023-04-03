@@ -384,6 +384,7 @@ module TopicFilter
     }
     # Update the materials with their short IDs + redirects
     pages.select{|p| mappings.keys.include? p.url }.each{|p|
+      puts p.url
       # Set the short id on the material
       #
       begin
