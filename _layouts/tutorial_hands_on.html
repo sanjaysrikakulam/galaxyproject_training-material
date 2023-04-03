@@ -165,8 +165,8 @@ We should ONLY be using new_material (if at all possible.)
             {% endif %}
             <a rel="license" href="{{ site.github_repository }}/blob/main/LICENSE.md">{{ locale['license-framework'] | default: "The GTN Framework is licensed under MIT" }}</a>
         </div>
-        {% if new_material.short_id %}
-        <div><strong>{{ locale['short-link'] | default: "Short Link" }}:</strong> <a href="https://gxy.io/t/{{ new_material.short_id }}">https://gxy.io/t/{{ new_material.short_id }}</a> </div>
+        {% if page.short_id %}
+        <div><strong>{{ locale['short-link'] | default: "Short Link" }}:</strong> <a href="https://gxy.io/gtn/{{ page.short_id }}">https://gxy.io/gtn/{{ page.short_id }}</a> </div>
         {% endif %}
     </blockquote>
 
