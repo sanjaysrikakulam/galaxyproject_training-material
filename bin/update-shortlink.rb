@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 require 'yaml'
-require '_plugins/gtn/shortlinks.rb'
+require './_plugins/gtn/shortlinks.rb'
 
 current_mapping = YAML.load_file('metadata/shortlinks.yaml')
 Gtn::Shortlinks.update(current_mapping)

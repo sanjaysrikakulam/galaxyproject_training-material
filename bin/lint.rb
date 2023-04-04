@@ -2,13 +2,11 @@
 require 'pathname'
 require 'find'
 require 'bibtex'
-require 'yaml'
 require 'json'
 require 'find'
 require 'bibtex'
 require 'citeproc/ruby'
 require 'csl/styles'
-require '_plugins/gtn/shortlinks.rb'
 
 # This is our ONE central linting script that handles EVERYTHING.
 
@@ -865,14 +863,6 @@ module GtnLinter
     self.enumerate_lintable.each{|path|
       self.fix_file(path)
     }
-
-    # Check for shortlinks where necessary
-    current_shortlinks = YAML.load_file('metadata/shortlinks.yaml')
-    updated_shortlinks = Gtn::Shortlinks.update(current_mapping)
-    if current_shortlinks.to_s != updated_shortlinks.to_s
-      emit_results([ReviewDogEmitter.file_error(path: path, message: "Please run 'ruby bin/update-shortlink.rb' and commit the changes.", code: "GTN:023")])
-    end
-
   end
 end
 
